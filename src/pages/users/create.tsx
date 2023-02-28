@@ -1,6 +1,8 @@
 import type { GetStaticProps } from "next";
+import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "../../components/Input";
+import { api } from "../../services/api";
 
 type CreateUserFormData = {
     name: string;
@@ -14,7 +16,12 @@ export default function CreateUser() {
     const { register, formState, getValues, handleSubmit } = useForm<CreateUserFormData>();
 
     const handleCreateUser: SubmitHandler<CreateUserFormData> = (data) => {
-        console.log(data);
+        api.post("/users/create", data).then(() => {
+            alert("Usuário criado com sucesso!");
+            Router.push("/users");
+        }).catch(() => {
+            alert("Erro ao criar usuário!");
+        });
     };
 
     return (
