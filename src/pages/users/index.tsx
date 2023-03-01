@@ -1,5 +1,7 @@
+import { ListUsers } from "../../components/Users/List";
+
 export default function Users() {
     return (
-        <h1>Listar Usuários</h1>
+        <ListUsers />
     );
 }
