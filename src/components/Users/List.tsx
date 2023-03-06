@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Pencil } from "phosphor-react";
 import { useFetch } from "../../hooks/useFetch";
 
 type Users = {
@@ -30,7 +32,11 @@ export function ListUsers() {
                         <tr key={user.slug}>
                             <td>{user.name}</td>
                             <td>{user.age}</td>
-                            <td></td>
+                            <td>
+                                <Link href={`/users/${user.slug}`}>
+                                    <Pencil size={16}  />
+                                </Link>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

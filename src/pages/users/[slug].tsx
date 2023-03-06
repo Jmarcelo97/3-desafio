@@ -1,11 +1,26 @@
-import type { GetStaticProps } from "next";
 import Router from "next/router";
+import { GetServerSideProps } from "next/types";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { mutate as mutateGlobal } from "swr";
 
 import { Input } from "../../components/Input";
+import { useFetch } from "../../hooks/useFetch";
 import { api } from "../../services/api";
 
-type CreateUserFormData = {
+type UpdateUserProps = {
+    slug: string;
+}
+
+type UserProps = {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+}
+
+type UpdateUserFormData = {
+    id: number;
     name: string;
     age: number;
     email: string;
@@ -13,20 +28,31 @@ type CreateUserFormData = {
     confirmPassword: string;
 }
 
-export default function CreateUser() {
-    const { register, formState, getValues, handleSubmit } = useForm<CreateUserFormData>();
+export default function UpdateUser({ slug }: UpdateUserProps) {
+    const { data } = useFetch<UserProps>(`/users/${slug}`);
+    const { register, formState, getValues, handleSubmit, setValue } = useForm<UpdateUserFormData>();
 
-    const handleCreateUser: SubmitHandler<CreateUserFormData> = (data) => {
-        api.post("/users/create", data).then(() => {
-            alert("Usuário criado com sucesso!");
+    useEffect(() => {
+        if (data) {
+            setValue("id", data.id);
+            setValue("name", data.name);
+            setValue("age", data.age);
+            setValue("email", data.email);
+        }
+    }, [data, setValue]);
+
+    const handleUpdateUser: SubmitHandler<UpdateUserFormData> = (data) => {
+        mutateGlobal(`/users/${slug}`, data);
+        api.post("/users/update", data).then(() => {
+            alert("Usuário atualizado com sucesso!");
             Router.push("/users");
         }).catch(() => {
-            alert("Erro ao criar usuário!");
+            alert("Erro ao atualizar usuário!");
         });
     };
 
     return (
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(handleCreateUser)}>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(handleUpdateUser)}>
             <div className="flex flex-col md:grid md:grid-cols-12 gap-4">
                 <div className="col-span-8">
                     <Input
@@ -61,9 +87,7 @@ export default function CreateUser() {
                         id="password"
                         label="Senha"
                         type="password"
-                        {...register("password", {
-                            required: "Campo obrigatório"
-                        })}
+                        {...register("password")}
                         error={formState.errors.password?.message}
                     />
                 </div>
@@ -73,7 +97,6 @@ export default function CreateUser() {
                         label="Confirmar senha"
                         type="password"
                         {...register("confirmPassword", {
-                            required: "Campo obrigatório",
                             validate: (value) => value === getValues("password") || "As senhas não conferem"
                         })}
                         error={formState.errors.confirmPassword?.message}
@@ -93,8 +116,12 @@ export default function CreateUser() {
     );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { slug } = context.params as { slug: string };
+
     return {
-        props: {},
+        props: {
+            slug
+        }
     };
 };

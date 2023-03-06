@@ -1,6 +1,8 @@
 ## Projeto PJ23-00: 3º Desafio
 
 **Atualizações:**
+- **Alpha 0.7.0**
+    - Adicionado a tela de `update` de usuário.
 - **Alpha 0.6.0**
     - Refatoração do código.
 - **Alpha 0.5.0**
