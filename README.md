@@ -1,6 +1,8 @@
 ## Projeto PJ23-00: 3º Desafio
 
 **Atualizações:**
+- **Alpha 0.6.0**
+    - Refatoração do código.
 - **Alpha 0.5.0**
     - Finalização da função de listar usuários.
 - **Alpha 0.4.0**

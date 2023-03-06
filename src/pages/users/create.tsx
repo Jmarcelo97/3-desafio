@@ -1,6 +1,8 @@
 import type { GetStaticProps } from "next";
 import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
+
+import { Breadcrumb } from "../../components/Breadcrumb";
 import { Input } from "../../components/Input";
 import { api } from "../../services/api";
 
@@ -85,7 +87,7 @@ export default function CreateUser() {
                     aria-label="Botão que submete o formulário"
                     className="ml-auto py-2 px-4 bg-blue-500 text-white rounded-sm"
                 >
-                    Salvar
+                Salvar
                 </button>
             </div>
         </form>
